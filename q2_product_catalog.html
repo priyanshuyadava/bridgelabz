@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Catalog</title>
+</head>
+<body>
+
+    <header>
+        <h1>Online Store - Product Catalog</h1>
+    </header>
+
+    <main>
+        <!-- Product table with image, description, price and availability -->
+        <table border="1" cellpadding="8">
+            <caption>Available Products</caption>
+
+            <!-- Table header row -->
+            <tr>
+                <th>Image</th>
+                <th>Product Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Availability</th>
+            </tr>
+
+            <!-- Product 1 -->
+            <tr>
+                <td><img src="shoes.jpg" alt="Running Shoes" width="80" height="80"></td>
+                <td>Running Shoes</td>
+                <td>Lightweight running shoes with cushioned sole, ideal for daily jogging.</td>
+                <td>Rs. 2,499</td>
+                <td>In Stock</td>
+            </tr>
+
+            <!-- Product 2 -->
+            <tr>
+                <td><img src="tshirt.jpg" alt="Cotton T-Shirt" width="80" height="80"></td>
+                <td>Cotton T-Shirt</td>
+                <td>100% cotton unisex t-shirt, available in multiple colors.</td>
+                <td>Rs. 799</td>
+                <td>In Stock</td>
+            </tr>
+
+            <!-- Product 3, showing colspan usage for an out-of-stock notice -->
+            <tr>
+                <td><img src="watch.jpg" alt="Wrist Watch" width="80" height="80"></td>
+                <td>Wrist Watch</td>
+                <td colspan="2">Analog wrist watch with leather strap - currently unavailable.</td>
+                <td>Out of Stock</td>
+            </tr>
+
+            <!-- Product 4, showing rowspan for a product sold in two variants -->
+            <tr>
+                <td rowspan="2"><img src="bag.jpg" alt="Backpack" width="80" height="80"></td>
+                <td rowspan="2">Backpack</td>
+                <td>Water-resistant travel backpack, black color.</td>
+                <td>Rs. 1,999</td>
+                <td>In Stock</td>
+            </tr>
+            <tr>
+                <td>Water-resistant travel backpack, grey color.</td>
+                <td>Rs. 1,999</td>
+                <td>In Stock</td>
+            </tr>
+
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Online Store. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

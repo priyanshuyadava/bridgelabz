@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dropdown-based Selection</title>
+</head>
+<body>
+
+    <header>
+        <h1>Travel Preference Selector</h1>
+    </header>
+
+    <main>
+        <form action="#" method="post">
+
+            <!-- Country dropdown with pre-selected option -->
+            <label for="country">Country:</label>
+            <select id="country" name="country">
+                <option value="india" selected>India</option>
+                <option value="usa">United States</option>
+                <option value="uk">United Kingdom</option>
+            </select>
+            <br><br>
+
+            <!-- State dropdown with pre-selected option -->
+            <label for="state">State:</label>
+            <select id="state" name="state">
+                <option value="gujarat" selected>Gujarat</option>
+                <option value="maharashtra">Maharashtra</option>
+                <option value="rajasthan">Rajasthan</option>
+            </select>
+            <br><br>
+
+            <!-- City dropdown with pre-selected option -->
+            <label for="city">City:</label>
+            <select id="city" name="city">
+                <option value="ahmedabad" selected>Ahmedabad</option>
+                <option value="surat">Surat</option>
+                <option value="vadodara">Vadodara</option>
+            </select>
+            <br><br>
+
+            <!-- Favorite tourist place dropdown with pre-selected option -->
+            <label for="place">Favorite Tourist Place:</label>
+            <select id="place" name="place">
+                <option value="sabarmati">Sabarmati Riverfront</option>
+                <option value="kankaria" selected>Kankaria Lake</option>
+                <option value="adalaj">Adalaj Stepwell</option>
+            </select>
+
+        </form>
+
+        <!-- Summary paragraph -->
+        <p>
+            You have selected India, Gujarat, Ahmedabad, and your favorite tourist
+            place as Kankaria Lake.
+        </p>
+    </main>
+
+</body>
+</html>
