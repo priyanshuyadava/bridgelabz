@@ -1,0 +1,283 @@
+
+/* =====================================================
+   ASSIGNMENT 5 - JAVASCRIPT
+   ===================================================== */
+
+
+/* Q1. Write a function greetUser(name, callback) that
+prints "Hello <name>" and then executes a callback
+function showEndMessage() which prints
+"Welcome to the course!".
+Demonstrate callback flow clearly.
+*/
+
+function greetUser(name, callback) {
+    console.log("Hello " + name);
+    callback();
+}
+
+function showEndMessage() {
+    console.log("Welcome to the course!");
+}
+
+greetUser("Rahul", showEndMessage);
+
+
+/* Q2. Create a function applyOperation(numbers, operation)
+that takes an array and a callback function.
+Use it to:
+1. Double each number in [1, 2, 3, 4].
+2. Square each number in [1, 2, 3, 4].
+*/
+
+function applyOperation(numbers, operation) {
+    return numbers.map(operation);
+}
+
+const numbers = [1, 2, 3, 4];
+
+const doubled = applyOperation(numbers, num => num * 2);
+const squared = applyOperation(numbers, num => num * num);
+
+console.log("Doubled Numbers:", doubled);
+console.log("Squared Numbers:", squared);
+
+
+/* Q3. Create an object user with a property name and
+a method showName written as an arrow function.
+Log the output and explain why this.name is undefined.
+Then fix it by using a normal function.
+*/
+
+const user = {
+    name: "Rahul",
+
+    showName: () => {
+        console.log(this.name);
+    }
+};
+
+console.log("Using Arrow Function:");
+user.showName();
+
+const user2 = {
+    name: "Rahul",
+
+    showName: function() {
+        console.log(this.name);
+    }
+};
+
+console.log("Using Normal Function:");
+user2.showName();
+
+// Arrow functions do not have their own this.
+// Normal functions get this from the calling object.
+
+
+/* Q4. Create a constructor function Car(brand, model).
+Add a prototype method getDetails() that prints car
+brand and model. Create two car objects and call this
+method to show method sharing via prototype.
+*/
+
+function Car(brand, model) {
+    this.brand = brand;
+    this.model = model;
+}
+
+Car.prototype.getDetails = function() {
+    console.log("Brand: " + this.brand);
+    console.log("Model: " + this.model);
+};
+
+const car1 = new Car("Toyota", "Fortuner");
+const car2 = new Car("Honda", "City");
+
+car1.getDetails();
+car2.getDetails();
+
+console.log(car1.getDetails === car2.getDetails);
+
+
+/* Q5. Create a Person constructor with property name.
+Then create a Student constructor that inherits from
+Person and adds property branch.
+Add methods to print both name and branch using
+prototypes. Demonstrate the prototype chain.
+*/
+
+function Person(name) {
+    this.name = name;
+}
+
+Person.prototype.showName = function() {
+    console.log("Name: " + this.name);
+};
+
+function Student(name, branch) {
+    Person.call(this, name);
+    this.branch = branch;
+}
+
+Student.prototype = Object.create(Person.prototype);
+Student.prototype.constructor = Student;
+
+Student.prototype.showBranch = function() {
+    console.log("Branch: " + this.branch);
+};
+
+const student1 = new Student("Rahul", "Computer Science");
+
+student1.showName();
+student1.showBranch();
+
+console.log(student1 instanceof Student);
+console.log(student1 instanceof Person);
+
+
+/* Q6. Create a prototype chain using constructor functions:
+Person -> Faculty -> Professor.
+Each should have its own property and method.
+Show how a Professor object can access all methods
+up the chain.
+*/
+
+function Person(name) {
+    this.name = name;
+}
+
+Person.prototype.showPerson = function() {
+    console.log("Name: " + this.name);
+};
+
+function Faculty(name, department) {
+    Person.call(this, name);
+    this.department = department;
+}
+
+Faculty.prototype = Object.create(Person.prototype);
+Faculty.prototype.constructor = Faculty;
+
+Faculty.prototype.showFaculty = function() {
+    console.log("Department: " + this.department);
+};
+
+function Professor(name, department, subject) {
+    Faculty.call(this, name, department);
+    this.subject = subject;
+}
+
+Professor.prototype = Object.create(Faculty.prototype);
+Professor.prototype.constructor = Professor;
+
+Professor.prototype.showProfessor = function() {
+    console.log("Subject: " + this.subject);
+};
+
+const professor1 = new Professor(
+    "Amit",
+    "Computer Science",
+    "JavaScript"
+);
+
+professor1.showPerson();
+professor1.showFaculty();
+professor1.showProfessor();
+
+console.log(professor1 instanceof Professor);
+console.log(professor1 instanceof Faculty);
+console.log(professor1 instanceof Person);
+
+
+/* Q7. Write a function makeMultiplier(multiplier) that
+returns another function to multiply any number by
+that multiplier.
+Explain how closure works in this example.
+*/
+
+function makeMultiplier(multiplier) {
+    return function(number) {
+        return number * multiplier;
+    };
+}
+
+const triple = makeMultiplier(3);
+const double = makeMultiplier(2);
+
+console.log("Triple:", triple(5));
+console.log("Double:", double(5));
+
+// Closure allows the inner function to remember
+// the multiplier variable from the outer function.
+
+
+/* Q8. Add a custom prototype method myMap() to all
+arrays that behaves like the built-in map() function.
+Example: [1, 2, 3].myMap(num => num * 2);
+*/
+
+Array.prototype.myMap = function(callback) {
+    const result = [];
+
+    for (let i = 0; i < this.length; i++) {
+        result.push(callback(this[i], i, this));
+    }
+
+    return result;
+};
+
+const arr = [1, 2, 3];
+
+const result = arr.myMap(num => num * 2);
+
+console.log("Original Array:", arr);
+console.log("New Array:", result);
+
+
+/* Q9. Rewrite the Person -> Student inheritance example
+using ES6 classes with extends and super().
+Show that both class and prototype versions behave
+the same.
+*/
+
+class PersonClass {
+    constructor(name) {
+        this.name = name;
+    }
+
+    showName() {
+        console.log("Name: " + this.name);
+    }
+}
+
+class StudentClass extends PersonClass {
+    constructor(name, branch) {
+        super(name);
+        this.branch = branch;
+    }
+
+    showBranch() {
+        console.log("Branch: " + this.branch);
+    }
+}
+
+const student2 = new StudentClass(
+    "Rahul",
+    "Computer Science"
+);
+
+student2.showName();
+student2.showBranch();
+
+console.log(student2 instanceof StudentClass);
+console.log(student2 instanceof PersonClass);
+
+// extends is used for inheritance.
+// super() calls the parent class constructor.
+// Both prototype and class versions support inheritance.
+
+
+/* =====================================================
+   END OF ASSIGNMENT 5
+   ===================================================== */
