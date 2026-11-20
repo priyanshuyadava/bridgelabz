@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assignment 7</title>
+
+<style>
+/* Common CSS */
+body {
+    font-family: Arial;
+    background: #f5f5f5;
+    margin: 20px;
+}
+
+section {
+    background: white;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border-radius: 8px;
+}
+
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+input, textarea {
+    padding: 10px;
+    margin: 5px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.error {
+    color: red;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.gallery img {
+    width: 100%;
+    cursor: pointer;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid gray;
+    padding: 10px;
+}
+
+#coordinateBox {
+    width: 400px;
+    height: 400px;
+    max-width: 100%;
+    border: 2px solid black;
+    position: relative;
+    background: #eee;
+    overflow: hidden;
+}
+
+.mouse-dot {
+    width: 10px;
+    height: 10px;
+    background: red;
+    border-radius: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.dropdown-options {
+    background: white;
+    border: 1px solid gray;
+    width: 160px;
+}
+
+.dropdown-options button {
+    display: block;
+    width: 100%;
+}
+
+body.dark {
+    background: #222;
+    color: white;
+}
+
+body.dark section {
+    background: #333;
+}
+
+body.blue {
+    background: lightblue;
+    color: #12345a;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Assignment 7 - JavaScript</h1>
+
+
+<!-- Q1. Dynamic Product List Manager (Add, Edit, Delete - Using Event Delegation) -->
+
+<section>
+<h2>Q1. Dynamic Product List Manager</h2>
+<input id="productInput" placeholder="Enter product name">
+<button id="addProduct">Add Product</button>
+<ul id="productList"></ul>
+</section>
+
+<script>
+const input = document.getElementById("productInput");
+const addButton = document.getElementById("addProduct");
+const productList = document.getElementById("productList");
+
+let editingItem = null;
+
+// Add new product
+addButton.addEventListener("click", () => {
+    const name = input.value.trim();
+    if (!name) return;
+
+    const li = document.createElement("li");
+    const span = document.createElement("span");
+    span.className = "product-name";
+    span.textContent = name;
+
+    li.appendChild(span);
+    li.innerHTML += ' <button data-action="edit">Edit</button> <button data-action="delete">Delete</button>';
+
+    productList.appendChild(li);
+    input.value = "";
+});
+
+// Save edited product
+function saveEdit() {
+    if (!editingItem) return;
+
+    const editInput = editingItem.querySelector("input");
+    const name = editInput.value.trim();
+
+    if (name) {
+        const span = document.createElement("span");
+        span.className = "product-name";
+        span.textContent = name;
+        editInput.replaceWith(span);
+    } else {
+        editingItem.remove();
+    }
+
+    editingItem = null;
+}
+
+// Event delegation for Edit and Delete
+productList.addEventListener("click", (event) => {
+    const action = event.target.dataset.action;
+    const li = event.target.closest("li");
+
+    if (!li || !action) return;
+
+    if (action === "delete") {
+        if (editingItem === li) editingItem = null;
+        li.remove();
+    }
+
+    if (action === "edit") {
+        if (editingItem) saveEdit();
+
+        const span = li.querySelector(".product-name");
+        const editInput = document.createElement("input");
+        editInput.value = span.textContent;
+        span.replaceWith(editInput);
+
+        editingItem = li;
+        editInput.focus();
+
+        editInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") saveEdit();
+        });
+    }
+});
+
+// Auto-save when clicking outside
+document.addEventListener("click", (event) => {
+    if (editingItem && !editingItem.contains(event.target)) {
+        saveEdit();
+    }
+});
+</script>
+
+
+<!-- Q2. Live Character Counter with Warning Behavior -->
+
+<section>
+<h2>Q2. Live Character Counter</h2>
+<textarea id="message" maxlength="100" placeholder="Write something"></textarea>
+<p>Remaining: <span id="remaining">100</span></p>
+<button id="resetCounter">Reset</button>
+</section>
+
+<script>
+const textarea = document.getElementById("message");
+const counter = document.getElementById("remaining");
+const resetButton = document.getElementById("resetCounter");
+
+// Prevent typing after 100 characters
+textarea.addEventListener("keydown", (event) => {
+    const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"];
+    const selected = textarea.selectionStart !== textarea.selectionEnd;
+
+    if (textarea.value.length >= 100 &&
+        !allowed.includes(event.key) &&
+        !event.ctrlKey && !event.metaKey && !selected) {
+        event.preventDefault();
+    }
+});
+
+// Update character counter
+textarea.addEventListener("input", () => {
+    const remaining = 100 - textarea.value.length;
+    counter.textContent = remaining;
+
+    if (remaining === 0) {
+        counter.style.color = "red";
+    } else if (remaining <= 20) {
+        counter.style.color = "orange";
+    } else {
+        counter.style.color = "green";
+    }
+});
+
+// Reset everything
+resetButton.addEventListener("click", () => {
+    textarea.value = "";
+    counter.textContent = 100;
+    counter.style.color = "green";
+});
+</script>
+
+
+<!-- Q3. Multi-Step Form with Next/Back and Validation -->
+
+<section>
+<h2>Q3. Multi-Step Form</h2>
+
+<div id="step1">
+    <input id="stepName" placeholder="Enter Name">
+    <button id="next1">Next</button>
+</div>
+
+<div id="step2" class="hidden">
+    <input id="stepEmail" placeholder="Enter Email">
+    <p id="emailError" class="error"></p>
+    <button id="back2">Back</button>
+    <button id="next2">Next</button>
+</div>
+
+<div id="step3" class="hidden">
+    <input id="stepPassword" type="password" placeholder="Enter Password">
+    <p id="passwordError" class="error"></p>
+    <button id="back3">Back</button>
+    <button id="finishForm">Finish</button>
+</div>
+
+<p id="formSummary"></p>
+</section>
+
+<script>
+const steps = [
+    document.getElementById("step1"),
+    document.getElementById("step2"),
+    document.getElementById("step3")
+];
+
+// Show selected step
+function showStep(index) {
+    steps.forEach((step, i) => {
+        step.classList.toggle("hidden", i !== index);
+    });
+}
+
+// Step 1 validation
+document.getElementById("next1").addEventListener("click", () => {
+    if (document.getElementById("stepName").value.trim()) {
+        showStep(1);
+    } else {
+        alert("Please enter your name");
+    }
+});
+
+// Step 2 email validation
+document.getElementById("next2").addEventListener("click", () => {
+    const email = document.getElementById("stepEmail").value;
+
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById("emailError").textContent = "";
+        showStep(2);
+    } else {
+        document.getElementById("emailError").textContent = "Enter valid email";
+    }
+});
+
+// Back buttons
+document.getElementById("back2").addEventListener("click", () => showStep(0));
+document.getElementById("back3").addEventListener("click", () => showStep(1));
+
+// Final submission
+document.getElementById("finishForm").addEventListener("click", () => {
+    const password = document.getElementById("stepPassword").value;
+
+    if (password.length >= 6) {
+        steps.forEach(step => step.classList.add("hidden"));
+
+        document.getElementById("formSummary").textContent =
+            "Name: " + document.getElementById("stepName").value +
+            " | Email: " + document.getElementById("stepEmail").value +
+            " | Form Completed Successfully";
+    } else {
+        document.getElementById("passwordError").textContent =
+            "Password must be at least 6 characters";
+    }
+});
+</script>
+
+
+<!-- Q4. Theme Switcher Using Attribute Manipulation -->
+
+<section>
+<h2>Q4. Theme Switcher</h2>
+<button data-theme="light">Light</button>
+<button data-theme="dark">Dark</button>
+<button data-theme="blue">Blue</button>
+</section>
+
+<script>
+// Change theme using setAttribute()
+document.querySelectorAll("[data-theme]").forEach(button => {
+    button.addEventListener("click", () => {
+        const theme = button.getAttribute("data-theme");
+
+        document.body.setAttribute("class", theme);
+        document.body.setAttribute("data-theme", theme);
+    });
+});
+
+// Default theme
+document.body.setAttribute("class", "light");
+document.body.setAttribute("data-theme", "light");
+</script>
+
+
+<!-- Q5. Image Gallery with Modal Preview -->
+
+<section>
+<h2>Q5. Image Gallery with Modal Preview</h2>
+
+<div id="gallery" class="gallery">
+    <img src="https://picsum.photos/id/1015/250/160" alt="Image 1">
+    <img src="https://picsum.photos/id/1016/250/160" alt="Image 2">
+    <img src="https://picsum.photos/id/1018/250/160" alt="Image 3">
+    <img src="https://picsum.photos/id/1020/250/160" alt="Image 4">
+    <img src="https://picsum.photos/id/1024/250/160" alt="Image 5">
+    <img src="https://picsum.photos/id/1035/250/160" alt="Image 6">
+</div>
+
+<div id="imageModal" class="modal hidden">
+    <div class="modal-content">
+        <button id="closeModal">Close</button>
+        <img id="modalImage" src="" alt="Preview">
+    </div>
+</div>
+</section>
+
+<script>
+const gallery = document.getElementById("gallery");
+const modal = document.getElementById("imageModal");
+const modalImage = document.getElementById("modalImage");
+const modalContent = document.querySelector(".modal-content");
+
+// Open modal on image click
+gallery.addEventListener("click", (event) => {
+    if (event.target.tagName === "IMG") {
+        modalImage.src = event.target.src;
+        modalImage.alt = event.target.alt;
+        modal.classList.remove("hidden");
+    }
+});
+
+// Prevent closing when clicking inside modal
+modalContent.addEventListener("click", (event) => {
+    event.stopPropagation();
+});
+
+// Close when clicking outside
+modal.addEventListener("click", () => {
+    modal.classList.add("hidden");
+});
+
+// Close button
+document.getElementById("closeModal").addEventListener("click", () => {
+    modal.classList.add("hidden");
+});
+</script>
+
+
+<!-- Q6. Real-Time Table Filter Using Input Event -->
+
+<section>
+<h2>Q6. Real-Time Table Filter</h2>
+
+<input id="studentSearch" placeholder="Search students">
+
+<table>
+<thead>
+<tr><th>Name</th><th>Branch</th><th>CGPA</th></tr>
+</thead>
+
+<tbody id="studentRows">
+<tr><td>Priya</td><td>CSE</td><td>8.2</td></tr>
+<tr><td>Rahul</td><td>ECE</td><td>7.5</td></tr>
+<tr><td>Aman</td><td>IT</td><td>8.8</td></tr>
+<tr><td>Neha</td><td>CSE</td><td>9.1</td></tr>
+</tbody>
+</table>
+
+<p id="noResults" class="error hidden">No results found</p>
+</section>
+
+<script>
+const searchInput = document.getElementById("studentSearch");
+const rows = document.querySelectorAll("#studentRows tr");
+const noResults = document.getElementById("noResults");
+
+// Filter table while typing
+searchInput.addEventListener("input", () => {
+    const searchText = searchInput.value.toLowerCase().trim();
+    let found = 0;
+
+    rows.forEach(row => {
+        const rowData = row.textContent.toLowerCase();
+
+        if (rowData.includes(searchText)) {
+            row.style.display = "";
+            found++;
+        } else {
+            row.style.display = "none";
+        }
+    });
+
+    // Show message if no results
+    noResults.classList.toggle("hidden", found !== 0);
+});
+</script>
+
+
+<!-- Q7. Detect Mouse Path and Coordinates Logger -->
+
+<section>
+<h2>Q7. Mouse Coordinates Logger</h2>
+
+<div id="coordinateBox">
+    <p id="coordinates">Move mouse here</p>
+</div>
+</section>
+
+<script>
+const box = document.getElementById("coordinateBox");
+const coordinates = document.getElementById("coordinates");
+
+// Track mouse movement
+box.addEventListener("mousemove", (event) => {
+    coordinates.textContent =
+        "clientX: " + event.clientX +
+        " | clientY: " + event.clientY;
+});
+
+// Drop red dot on double click
+box.addEventListener("dblclick", (event) => {
+    const rect = box.getBoundingClientRect();
+
+    const dot = document.createElement("span");
+    dot.className = "mouse-dot";
+
+    dot.style.left = (event.clientX - rect.left) + "px";
+    dot.style.top = (event.clientY - rect.top) + "px";
+
+    box.appendChild(dot);
+});
+</script>
+
+
+<!-- Q8. Custom Dropdown Using Only JavaScript (No Select Tag) -->
+
+<section>
+<h2>Q8. Custom Dropdown</h2>
+
+<div id="customDropdown">
+    <button id="dropdownButton">Choose Subject</button>
+
+    <div id="dropdownOptions" class="dropdown-options hidden">
+        <button type="button">JavaScript</button>
+        <button type="button">Java</button>
+        <button type="button">Python</button>
+    </div>
+</div>
+</section>
+
+<script>
+const dropdown = document.getElementById("customDropdown");
+const dropdownButton = document.getElementById("dropdownButton");
+const options = document.getElementById("dropdownOptions");
+
+// Show and hide options
+dropdownButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    options.classList.toggle("hidden");
+});
+
+// Select option
+options.addEventListener("click", (event) => {
+    if (event.target.tagName === "BUTTON") {
+        dropdownButton.textContent = event.target.textContent;
+        options.classList.add("hidden");
+    }
+});
+
+// Close dropdown using capturing phase
+document.addEventListener("click", (event) => {
+    if (!dropdown.contains(event.target)) {
+        options.classList.add("hidden");
+    }
+}, true);
+</script>
+
+
+<!-- Q9. Form Submit Blocker with preventDefault() and Live Errors -->
+
+<section>
+<h2>Q9. Form Submit Blocker with Live Errors</h2>
+
+<form id="validationForm" novalidate>
+
+    <input id="userName" placeholder="Enter Name">
+    <small id="nameError" class="error"></small>
+
+    <input id="userEmail" placeholder="Enter Email">
+    <small id="userEmailError" class="error"></small>
+
+    <input id="userPassword" type="password" placeholder="Enter Password">
+    <small id="userPasswordError" class="error"></small>
+
+    <button type="submit">Submit</button>
+</form>
+
+<p id="successMessage"></p>
+</section>
+
+<script>
+const form = document.getElementById("validationForm");
+
+const nameInput = document.getElementById("userName");
+const emailInput = document.getElementById("userEmail");
+const passwordInput = document.getElementById("userPassword");
+
+// Validate all fields
+function validateForm() {
+
+    document.getElementById("nameError").textContent =
+        nameInput.value.trim() ? "" : "Name is required";
+
+    document.getElementById("userEmailError").textContent =
+        emailInput.value.includes("@") ? "" : "Email must contain @";
+
+    document.getElementById("userPasswordError").textContent =
+        passwordInput.value.length >= 6 ? "" : "Password must be at least 6 characters";
+
+    return nameInput.value.trim() !== "" &&
+           emailInput.value.includes("@") &&
+           passwordInput.value.length >= 6;
+}
+
+// Remove errors automatically when correcting input
+[nameInput, emailInput, passwordInput].forEach(input => {
+    input.addEventListener("input", () => {
+        validateForm();
+        document.getElementById("successMessage").textContent = "";
+    });
+});
+
+// Handle form submission
+form.addEventListener("submit", (event) => {
+
+    // Prevent default submission
+    event.preventDefault();
+
+    if (validateForm()) {
+        document.getElementById("successMessage").textContent =
+            "Form Submitted Successfully";
+
+        form.reset();
+    }
+});
+</script>
+
+</body>
+</html>
