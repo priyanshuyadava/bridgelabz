@@ -1,0 +1,468 @@
+
+// =====================================================
+// ASSIGNMENT 3 - JAVASCRIPT
+// =====================================================
+
+"use strict";
+
+
+// Q1 – Dynamic Data Parser
+// Convert mixed API data into Number, Boolean and String.
+// Skip invalid numbers and store valid and invalid values
+// in separate arrays. Print a detailed report.
+
+const apiData = [
+    "25", "true", "false", "NaN", " ", "100px",
+    "3.14", null, undefined
+];
+
+const validNumbers = [];
+const invalidNumbers = [];
+
+console.log("\nQ1 - DYNAMIC DATA PARSER");
+
+for (let value of apiData) {
+    const numberValue = Number(value);
+    const booleanValue = Boolean(value);
+    const stringValue = String(value);
+
+    console.log("Original:", value);
+    console.log("Number:", numberValue);
+    console.log("Boolean:", booleanValue);
+    console.log("String:", stringValue);
+
+    if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === "" ||
+        Number.isNaN(numberValue)
+    ) {
+        invalidNumbers.push(value);
+    } else {
+        validNumbers.push(numberValue);
+    }
+
+    console.log("----------------------");
+}
+
+console.log("Valid Numbers:", validNumbers);
+console.log("Invalid Numbers:", invalidNumbers);
+
+
+// Q2 – Employee Bonus Calculator
+// Convert salary and years into numbers.
+// Calculate bonus: 10% if experience is greater than 3 years,
+// otherwise 5%. Use strict mode, template strings and try-catch.
+
+const employees = [
+    { name: "Amit", salary: "45000", years: "5" },
+    { name: "Sara", salary: "38000", years: "2" },
+    { name: "Kiran", salary: "52000", years: "7" }
+];
+
+console.log("\nQ2 - EMPLOYEE BONUS CALCULATOR");
+
+try {
+    for (let employee of employees) {
+        if (
+            !employee.name ||
+            employee.salary === undefined ||
+            employee.years === undefined
+        ) {
+            throw new Error("Missing employee information");
+        }
+
+        const salary = Number(employee.salary);
+        const years = Number(employee.years);
+
+        if (!Number.isFinite(salary) || !Number.isFinite(years)) {
+            throw new Error("Invalid salary or experience");
+        }
+
+        const bonus = years > 3
+            ? salary * 0.10
+            : salary * 0.05;
+
+        console.log(`
+Employee: ${employee.name}
+Salary: ${salary}
+Experience: ${years} years
+Bonus: ${bonus}
+Total Salary: ${salary + bonus}
+----------------------
+`);
+    }
+} catch (error) {
+    console.log("Error:", error.message);
+}
+
+
+// Q3 – Transaction Validator
+// Check every transaction.
+// Throw custom errors for negative amount, missing id or amount,
+// and null entries. Store valid and invalid transactions separately.
+// Use debugger to watch variable states.
+
+const transactions = [
+    { id: 1, amount: 2000 },
+    { id: 2, amount: -500 },
+    { id: 3 },
+    null
+];
+
+const validTransactions = [];
+const invalidTransactions = [];
+
+console.log("\nQ3 - TRANSACTION VALIDATOR");
+
+for (let transaction of transactions) {
+    try {
+        debugger;
+
+        if (transaction === null) {
+            throw new Error("NULL_ENTRY");
+        }
+
+        if (
+            transaction.id === undefined ||
+            transaction.amount === undefined
+        ) {
+            throw new Error("MISSING_DATA");
+        }
+
+        if (transaction.amount < 0) {
+            throw new Error("NEGATIVE_AMOUNT");
+        }
+
+        validTransactions.push(transaction);
+        console.log("Valid Transaction:", transaction);
+
+    } catch (error) {
+        invalidTransactions.push({
+            transaction: transaction,
+            reason: error.message
+        });
+
+        console.log("Invalid Transaction:", error.message);
+    }
+}
+
+console.log("Valid Transactions:", validTransactions);
+console.log("Invalid Transactions:", invalidTransactions);
+console.log("Successful Count:", validTransactions.length);
+console.log("Failed Count:", invalidTransactions.length);
+
+
+// Q4 – Debugging Mystery
+// Original code causes an error because greeting is not declared.
+// Strict mode does not allow undeclared variables.
+// Fix the code using let and observe using debugger.
+
+console.log("\nQ4 - DEBUGGING MYSTERY");
+
+function showMessage() {
+    let greeting = "Welcome";
+
+    debugger;
+
+    console.log(greeting);
+}
+
+showMessage();
+
+// In strict mode, assigning a value to an undeclared variable
+// causes a ReferenceError.
+// Declaring greeting with let fixes the problem.
+// The variable is available only inside the function.
+
+
+// Q5 – Hoisting Lab: The Sequence Trap
+// Predict the output and understand hoisting.
+// var is hoisted with undefined.
+// Function declarations are fully hoisted.
+// let is hoisted but remains in the Temporal Dead Zone
+// until its declaration is executed.
+
+console.log("\nQ5 - HOISTING LAB");
+
+// Fixed version
+var score = 50;
+
+function announce() {
+    console.log("Game started");
+}
+
+let status = "ready";
+
+console.log("Score:", score);
+announce();
+
+function startGame() {
+    console.log("Status:", status);
+}
+
+startGame();
+
+// Arrow function comparison
+const startArrowGame = () => {
+    console.log("Arrow function game started");
+};
+
+startArrowGame();
+
+// Arrow functions assigned to const cannot be called
+// before their initialization.
+
+
+// Q6 – Pyramid Pattern Generator
+// Generate a star pyramid using nested loops.
+// Use var and let to observe variable reuse.
+// Get the number of rows from user input if available.
+// Default value is 5. Use strict mode to catch undeclared variables.
+
+console.log("\nQ6 - PYRAMID PATTERN");
+
+let rows = 5;
+
+// Node.js command-line input can be passed as an argument.
+// Example: node Assignment3.js 4
+if (typeof process !== "undefined" && process.argv[2] !== undefined) {
+    const inputRows = Number(process.argv[2]);
+
+    if (Number.isInteger(inputRows) && inputRows > 0) {
+        rows = inputRows;
+    } else {
+        console.log("Invalid input. Using default 5 rows.");
+    }
+}
+
+for (let i = 1; i <= rows; i++) {
+    let pattern = "";
+
+    for (let j = 1; j <= i; j++) {
+        pattern += "* ";
+    }
+
+    console.log(pattern);
+}
+
+// Using var instead of let
+console.log("Pyramid using var:");
+
+for (var i = 1; i <= 4; i++) {
+    var pattern = "";
+
+    for (var j = 1; j <= i; j++) {
+        pattern += "* ";
+    }
+
+    console.log(pattern);
+}
+
+// var is function-scoped, while let is block-scoped.
+// Both produce the same pyramid in these loops.
+
+
+// Q7 – Smart Calculator
+// Use switch to perform addition, division, power,
+// square root and subtraction.
+// Handle division by zero and negative square root.
+// Throw an error for invalid operations.
+
+console.log("\nQ7 - SMART CALCULATOR");
+
+const operations = ["add", "divide", "power", "root", "subtract"];
+
+const num1 = 25;
+const num2 = 0;
+
+class InvalidOperationError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "InvalidOperationError";
+    }
+}
+
+function calculate(operation, a, b) {
+    switch (operation) {
+        case "add":
+            return a + b;
+
+        case "divide":
+            if (b === 0) {
+                throw new Error("Cannot divide by zero");
+            }
+            return a / b;
+
+        case "power":
+            return Math.pow(a, b);
+
+        case "root":
+            if (a < 0) {
+                throw new Error("Cannot find square root of negative number");
+            }
+            return Math.sqrt(a);
+
+        case "subtract":
+            return a - b;
+
+        default:
+            throw new InvalidOperationError("Invalid operation");
+    }
+}
+
+for (let operation of operations) {
+    try {
+        const result = calculate(operation, num1, num2);
+
+        console.log(`${operation}: ${result}`);
+
+    } catch (error) {
+        console.log(`${operation} Error: ${error.message}`);
+    }
+}
+
+
+// Q8 – Strict Mode Showdown
+// Duplicate function parameters and deleting variables
+// are not allowed in strict mode.
+// Show the correct version using ES6.
+
+console.log("\nQ8 - STRICT MODE SHOWDOWN");
+
+// Correct version using ES6
+function demo(a, b) {
+    let total = 10;
+
+    console.log("First Value:", a);
+    console.log("Second Value:", b);
+    console.log("Total:", total);
+
+    return total;
+}
+
+demo(5, 10);
+
+// Strict mode does not allow duplicate parameter names.
+// It also does not allow deleting declared variables.
+// let and const should be used for local variables.
+
+// Without strict mode, duplicate parameters are allowed
+// in ordinary non-strict functions.
+// Undeclared assignments may create global variables.
+// Deleting declared variables is still not allowed.
+
+
+// Q9 – JSON Audit
+// Parse JSON data using try-catch.
+// Detect invalid JSON and missing keys.
+// Store valid entries in a clean array.
+// Convert age to Number and filter under-18 users.
+
+console.log("\nQ9 - JSON AUDIT");
+
+const rawData = [
+    '{"user":"Alex","age":25}',
+    '{"id":2}',
+    '{invalid}',
+    '{"user":"Mina","age":"22"}'
+];
+
+const cleanData = [];
+const jsonErrors = [];
+
+for (let i = 0; i < rawData.length; i++) {
+    try {
+        debugger;
+
+        const parsedData = JSON.parse(rawData[i]);
+
+        if (
+            parsedData.user === undefined ||
+            parsedData.age === undefined
+        ) {
+            throw new Error("Missing user or age key");
+        }
+
+        parsedData.age = Number(parsedData.age);
+
+        if (!Number.isFinite(parsedData.age)) {
+            throw new Error("Invalid age value");
+        }
+
+        cleanData.push(parsedData);
+
+        console.log(`Line ${i + 1}: Valid JSON`);
+
+    } catch (error) {
+        jsonErrors.push({
+            line: i + 1,
+            error: error.message
+        });
+
+        console.log(`Line ${i + 1}: ${error.message}`);
+    }
+}
+
+console.log("Clean Data:", cleanData);
+console.log("JSON Errors:", jsonErrors);
+
+const under18 = cleanData.filter(user => user.age < 18);
+
+console.log("Users Under 18:", under18);
+
+
+// Q10 – Nested Hoisting and Closures
+// Predict the output and understand separate function scopes.
+// Each function has its own memory context.
+// Convert the inner function into an arrow function
+// and observe the difference in hoisting and scope.
+
+console.log("\nQ10 - NESTED HOISTING AND CLOSURES");
+
+function outer() {
+    console.log("Outer count:", count);
+
+    var count = 5;
+
+    function inner() {
+        console.log("Inner count:", count);
+
+        var count = 10;
+    }
+
+    inner();
+}
+
+outer();
+
+// Output:
+// Outer count: undefined
+// Inner count: undefined
+//
+// Each function has its own local variable count.
+// The inner count is hoisted separately from outer count.
+
+// Inner function rewritten as arrow function
+function outerArrow() {
+    console.log("Outer Arrow Count:", count);
+
+    var count = 5;
+
+    const innerArrow = () => {
+        console.log("Inner Arrow Count:", count);
+    };
+
+    innerArrow();
+}
+
+outerArrow();
+
+// Arrow functions do not create their own local this,
+// arguments or super, but they still have their own
+// lexical variable scope.
+
+
+// =====================================================
+// END OF ASSIGNMENT 3
+// =====================================================
