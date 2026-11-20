@@ -1,0 +1,330 @@
+
+// =====================================================
+// ASSIGNMENT 2 - JAVASCRIPT
+// =====================================================
+
+
+// Q1. Scope Conflict Resolver
+// Declare a global variable bonus = 5000.
+// Inside calculateSalary(), declare salary = 40000.
+// Add bonus only if isPermanent is true.
+// Print total salary and demonstrate local scope.
+
+let bonus = 5000;
+
+function calculateSalary(isPermanent) {
+    let salary = 40000;
+
+    if (isPermanent === true) {
+        let totalSalary = salary + bonus;
+        console.log("Total Salary:", totalSalary);
+    } else {
+        console.log("Total Salary:", salary);
+    }
+
+    console.log("Global Bonus:", bonus);
+}
+
+calculateSalary(true);
+calculateSalary(false);
+
+// Changing the global bonus affects future calculations.
+bonus = 7000;
+calculateSalary(true);
+
+
+// Q2. String Manipulation Report
+// Store a product name with extra spaces.
+// Trim spaces, convert to lowercase and capitalize
+// the first letter of each word.
+// Replace "pro" with "Pro Edition".
+// Display cleaned title and its length.
+
+let productName = " wireless headphones PRO ";
+
+let cleanedTitle = productName.trim().toLowerCase();
+
+cleanedTitle = cleanedTitle
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+cleanedTitle = cleanedTitle.replace("Pro", "Pro Edition");
+
+console.log("Cleaned Product Name:", cleanedTitle);
+console.log("Title Length:", cleanedTitle.length);
+
+
+// Q3. Math Utility Dashboard
+// Take x = 16.75.
+// Display rounded value, square root, power of 3
+// and a random number between 10 and 50.
+// Use template literals.
+
+const x = 16.75;
+
+const roundedValue = Math.round(x);
+const squareRoot = Math.sqrt(x);
+const powerValue = Math.pow(x, 3);
+const randomNumber = Math.floor(Math.random() * 41) + 10;
+
+console.log(`
+MATH UTILITY DASHBOARD
+----------------------
+Original Number: ${x}
+Rounded Value: ${roundedValue}
+Square Root: ${squareRoot}
+Power of 3: ${powerValue}
+Random Number: ${randomNumber}
+`);
+
+
+// Q4. Array Performance Analyzer
+// Create an array of 8 random scores between 30 and 100.
+// Calculate highest, lowest, average and passed students.
+// Use map(), filter() and reduce().
+
+const scores = Array.from(
+    { length: 8 },
+    () => Math.floor(Math.random() * 71) + 30
+);
+
+const highestScore = Math.max(...scores);
+const lowestScore = Math.min(...scores);
+
+const totalScore = scores.reduce((sum, score) => sum + score, 0);
+
+const averageScore = totalScore / scores.length;
+
+const passedStudents = scores.filter(score => score >= 50);
+
+const updatedScores = scores.map(score => score);
+
+console.log(`
+ARRAY PERFORMANCE ANALYZER
+---------------------------
+Scores: ${updatedScores}
+Highest Score: ${highestScore}
+Lowest Score: ${lowestScore}
+Average Score: ${averageScore.toFixed(2)}
+Passed Students: ${passedStudents.length}
+`);
+
+
+// Q5. Boolean Logic Access System
+// Check door, window, alarm and owner conditions.
+// Access is granted only when the alarm is on,
+// door and window are closed and owner is inside.
+// Use &&, || and ! operators.
+// Test multiple outcomes.
+
+let isDoorLocked = true;
+let isWindowClosed = true;
+let isAlarmOn = true;
+let isOwnerInside = true;
+
+if (
+    isAlarmOn &&
+    isDoorLocked &&
+    isWindowClosed &&
+    isOwnerInside
+) {
+    console.log("Home Status: Secure");
+} else {
+    console.log("Home Status: Unsafe");
+}
+
+// Change conditions and test again.
+isDoorLocked = false;
+
+if (
+    isAlarmOn &&
+    isDoorLocked &&
+    isWindowClosed &&
+    isOwnerInside
+) {
+    console.log("Home Status: Secure");
+} else {
+    console.log("Home Status: Unsafe");
+}
+
+// Demonstrating OR and NOT operators.
+console.log("Alarm Off:", !isAlarmOn);
+console.log(
+    "Security Alert:",
+    !isDoorLocked || !isWindowClosed
+);
+
+
+// Q6. Event-Based Counter Simulation
+// Create count = 0.
+// Create increment() and decrement() functions.
+// Modify count and log current value.
+// Simulate click events by calling functions.
+// Use a nested function to demonstrate scope.
+
+let count = 0;
+
+function increment() {
+    count++;
+    console.log("Incremented Count:", count);
+}
+
+function decrement() {
+    count--;
+    console.log("Decremented Count:", count);
+}
+
+function counterManager() {
+    function showCount() {
+        console.log("Current Count:", count);
+    }
+
+    increment();
+    increment();
+    decrement();
+
+    showCount();
+}
+
+counterManager();
+
+
+// Q7. Customer Feedback Processor
+// Store customer feedback.
+// Count the words using split().
+// Check whether feedback includes "bad" or "poor".
+// Print Positive Feedback or Needs Improvement.
+
+const feedback = "Great product! Fast delivery and amazing sound quality!";
+
+const words = feedback.trim().split(/\s+/);
+const wordCount = words.length;
+
+const lowerFeedback = feedback.toLowerCase();
+
+if (
+    lowerFeedback.includes("bad") ||
+    lowerFeedback.includes("poor")
+) {
+    console.log("Needs Improvement");
+} else {
+    console.log("Positive Feedback");
+}
+
+console.log("Feedback:", feedback);
+console.log("Total Words:", wordCount);
+
+
+// Q8. Dynamic Discount Evaluator
+// Create an array of cart objects.
+// Electronics get 10% discount.
+// Fashion gets 5% discount.
+// If discounted cart total is greater than 50000,
+// apply an extra 5% overall discount.
+// Use loops, conditions and reduce().
+
+const cart = [
+    { item: "Laptop", category: "electronics", price: 45000 },
+    { item: "Shoes", category: "fashion", price: 2500 },
+    { item: "Book", category: "education", price: 600 }
+];
+
+let discountedCart = [];
+
+for (let product of cart) {
+    let price = product.price;
+
+    if (product.category === "electronics") {
+        price = price - (price * 0.10);
+    } else if (product.category === "fashion") {
+        price = price - (price * 0.05);
+    }
+
+    discountedCart.push({
+        item: product.item,
+        price: price
+    });
+}
+
+let total = discountedCart.reduce((sum, product) => {
+    return sum + product.price;
+}, 0);
+
+if (total > 50000) {
+    total = total - (total * 0.05);
+}
+
+console.log("Discounted Cart:", discountedCart);
+console.log("Final Cart Total:", total);
+
+
+// Q9. Odd-Even Number Analyzer
+// Create an array containing numbers 1 to 30 using a loop.
+// If divisible by 3 and 5, print FizzBuzz.
+// Else if even, print Even.
+// Otherwise, print Odd.
+// Store results in a new array using push().
+
+const numbers = [];
+const results = [];
+
+for (let i = 1; i <= 30; i++) {
+    numbers.push(i);
+
+    if (i % 3 === 0 && i % 5 === 0) {
+        results.push("FizzBuzz");
+    } else if (i % 2 === 0) {
+        results.push("Even");
+    } else {
+        results.push("Odd");
+    }
+}
+
+console.log("Numbers:", numbers);
+console.log("Results:", results);
+
+
+// Q10. Departmental Employee Evaluator
+// Create a nested array containing department names
+// and performance scores.
+// Excellent: score >= 90
+// Good: score between 75 and 89
+// Average: score between 60 and 74
+// Needs Improvement: score below 60.
+// Use loops and nested if-else conditions.
+
+const departments = [
+    ["HR", 72],
+    ["Finance", 88],
+    ["Tech", 95],
+    ["Support", 63]
+];
+
+console.log("DEPARTMENT PERFORMANCE REPORT");
+
+for (let department of departments) {
+    const name = department[0];
+    const score = department[1];
+
+    let performance;
+
+    if (score >= 90) {
+        performance = "Excellent";
+    } else if (score >= 75) {
+        performance = "Good";
+    } else if (score >= 60) {
+        performance = "Average";
+    } else {
+        performance = "Needs Improvement";
+    }
+
+    console.log(
+        `Department: ${name}, Score: ${score}, Performance: ${performance}`
+    );
+}
+
+
+// =====================================================
+// END OF ASSIGNMENT 2
+// =====================================================
