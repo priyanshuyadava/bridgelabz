@@ -1,0 +1,437 @@
+
+// =====================================================
+// ASSIGNMENT 4 - JAVASCRIPT
+// =====================================================
+
+
+// Q1. E-Commerce Product Manager (Classes + Objects)
+// Create a Product class with id, name, price and category.
+// Add methods to apply discount and display product details.
+// Create multiple products in an array.
+// Display products having price greater than 1000 using filter().
+
+class Product {
+    constructor(id, name, price, category) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    applyDiscount(percent) {
+        this.price = this.price - (this.price * percent / 100);
+    }
+
+    displayDetails() {
+        return `ID: ${this.id}, Name: ${this.name}, Price: ${this.price}, Category: ${this.category}`;
+    }
+}
+
+const products = [
+    new Product(1, "Laptop", 50000, "Electronics"),
+    new Product(2, "Mobile", 15000, "Electronics"),
+    new Product(3, "Mouse", 500, "Accessories")
+];
+
+products[0].applyDiscount(10);
+
+console.log("All Products:");
+products.forEach(product => console.log(product.displayDetails()));
+
+const expensiveProducts = products.filter(product => product.price > 1000);
+
+console.log("Products Above 1000:");
+expensiveProducts.forEach(product => console.log(product.displayDetails()));
+
+
+// Q2. Student Form Validator (Forms + RegExp)
+// Create a student registration form with Name, Email,
+// Phone and Password.
+// Validate name using alphabets only.
+// Validate email using proper email format.
+// Phone must contain exactly 10 digits.
+// Password must contain uppercase, number and special character.
+// Show red border and error message if invalid, green if valid.
+//
+// Run this question in a browser using an HTML page.
+
+function validateStudentForm() {
+    const name = document.getElementById("studentName");
+    const email = document.getElementById("studentEmail");
+    const phone = document.getElementById("studentPhone");
+    const password = document.getElementById("studentPassword");
+
+    const validations = [
+        [name, /^[A-Za-z]+$/, "Name must contain alphabets only."],
+        [email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Enter a valid email."],
+        [phone, /^\d{10}$/, "Phone must contain exactly 10 digits."],
+        [password, /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/, "Password must contain uppercase, number and special character."]
+    ];
+
+    let valid = true;
+
+    validations.forEach(([field, regex, message]) => {
+        const error = document.getElementById(field.id + "Error");
+
+        if (regex.test(field.value)) {
+            field.style.border = "2px solid green";
+            error.textContent = "";
+        } else {
+            field.style.border = "2px solid red";
+            error.textContent = message;
+            valid = false;
+        }
+    });
+
+    if (valid) {
+        alert("Registration Successful!");
+    }
+}
+
+
+// Q3. Library Management System (Classes + Objects)
+// Create a Book class with title, author, ISBN and isIssued.
+// Add issueBook() and returnBook() methods.
+// Create an array of books.
+// Display available books and issue a book using ISBN.
+
+class Book {
+    constructor(title, author, isbn) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.isIssued = false;
+    }
+
+    issueBook() {
+        if (!this.isIssued) {
+            this.isIssued = true;
+            console.log(this.title + " has been issued.");
+        } else {
+            console.log(this.title + " is already issued.");
+        }
+    }
+
+    returnBook() {
+        if (this.isIssued) {
+            this.isIssued = false;
+            console.log(this.title + " has been returned.");
+        } else {
+            console.log(this.title + " is not issued.");
+        }
+    }
+}
+
+const books = [
+    new Book("JavaScript Basics", "John", "101"),
+    new Book("HTML Guide", "David", "102"),
+    new Book("CSS Master", "Smith", "103")
+];
+
+console.log("Available Books:");
+
+books.filter(book => !book.isIssued)
+    .forEach(book => console.log(book.title, book.isbn));
+
+function issueBookByISBN(isbn) {
+    const book = books.find(book => book.isbn === isbn);
+
+    if (book) {
+        book.issueBook();
+    } else {
+        console.log("Book not found.");
+    }
+}
+
+issueBookByISBN("101");
+
+
+// Q4. Custom Form Builder (Forms + Classes)
+// Create a FormBuilder class that takes an array of fields.
+// Generate a dynamic form using innerHTML.
+// Add getFormData() to return entered values as an object.
+// Display form data when Submit is clicked.
+//
+// Run this question in a browser.
+
+class FormBuilder {
+    constructor(fields) {
+        this.fields = fields;
+    }
+
+    createForm(containerId) {
+        const container = document.getElementById(containerId);
+
+        let formHTML = '<form id="dynamicForm">';
+
+        this.fields.forEach((field, index) => {
+            formHTML += `
+                <label>${field.label}</label>
+                <input type="${field.type}" name="field${index}" required>
+                <br><br>
+            `;
+        });
+
+        formHTML += '<button type="submit">Submit</button>';
+        formHTML += '</form>';
+
+        container.innerHTML = formHTML;
+
+        document.getElementById("dynamicForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const data = this.getFormData();
+            console.log(data);
+            document.getElementById("formResult").textContent =
+                JSON.stringify(data, null, 2);
+        });
+    }
+
+    getFormData() {
+        const form = document.getElementById("dynamicForm");
+        const data = {};
+
+        this.fields.forEach((field, index) => {
+            data[field.label] = form.elements["field" + index].value;
+        });
+
+        return data;
+    }
+}
+
+
+// Q5. Movie Ticket Booking (Objects + RegExp)
+// Create a movie booking form.
+// Validate name using alphabets only.
+// Validate email using proper format.
+// Seats must be between 1 and 10.
+// Store valid booking details in an object.
+// Display ticket details.
+//
+// Run this question in a browser.
+
+function bookMovieTicket() {
+    const name = document.getElementById("movieName").value;
+    const email = document.getElementById("movieEmail").value;
+    const seats = Number(document.getElementById("movieSeats").value);
+
+    const namePattern = /^[A-Za-z ]+$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!namePattern.test(name)) {
+        alert("Name must contain alphabets only.");
+        return;
+    }
+
+    if (!emailPattern.test(email)) {
+        alert("Enter a valid email.");
+        return;
+    }
+
+    if (!Number.isInteger(seats) || seats < 1 || seats > 10) {
+        alert("Seats must be between 1 and 10.");
+        return;
+    }
+
+    const booking = {
+        name: name,
+        email: email,
+        seats: seats
+    };
+
+    document.getElementById("ticketResult").textContent =
+        "Movie Ticket Booking\n" +
+        "Name: " + booking.name + "\n" +
+        "Email: " + booking.email + "\n" +
+        "Seats: " + booking.seats;
+
+    console.log(booking);
+}
+
+
+// Q6. Employee Management System (Classes + Object Methods)
+// Create an Employee class with id, name, department and salary.
+// Add getAnnualSalary() and applyBonus(percent).
+// Create 5 employee objects.
+// Calculate annual salary and total annual payout using reduce().
+
+class Employee {
+    constructor(id, name, department, salary) {
+        this.id = id;
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    getAnnualSalary() {
+        return this.salary * 12;
+    }
+
+    applyBonus(percent) {
+        this.salary += this.salary * percent / 100;
+    }
+}
+
+const employees = [
+    new Employee(1, "Rahul", "IT", 30000),
+    new Employee(2, "Amit", "HR", 25000),
+    new Employee(3, "Priya", "Sales", 35000),
+    new Employee(4, "Neha", "IT", 40000),
+    new Employee(5, "Ravi", "Finance", 28000)
+];
+
+employees[0].applyBonus(10);
+
+employees.forEach(employee => {
+    console.log(
+        employee.name + " Annual Salary: " +
+        employee.getAnnualSalary()
+    );
+});
+
+const totalPayout = employees.reduce((total, employee) => {
+    return total + employee.getAnnualSalary();
+}, 0);
+
+console.log("Total Annual Payout:", totalPayout);
+
+
+// Q7. Login Form Validation using RegExp
+// Create a login form with username and password.
+// Username must contain at least 5 characters.
+// Password must contain at least 8 characters,
+// one number, one uppercase, one lowercase and one special character.
+// Show specific error messages or success message.
+//
+// Run this question in a browser.
+
+function validateLogin() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("loginPassword").value;
+
+    const usernamePattern = /^.{5,}$/;
+    const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+    const errors = [];
+
+    if (!usernamePattern.test(username)) {
+        errors.push("Username must contain at least 5 characters.");
+    }
+
+    if (password.length < 8) {
+        errors.push("Password must contain at least 8 characters.");
+    }
+
+    if (!/[A-Z]/.test(password)) {
+        errors.push("Password must contain one uppercase letter.");
+    }
+
+    if (!/[a-z]/.test(password)) {
+        errors.push("Password must contain one lowercase letter.");
+    }
+
+    if (!/\d/.test(password)) {
+        errors.push("Password must contain one number.");
+    }
+
+    if (!/[^A-Za-z0-9]/.test(password)) {
+        errors.push("Password must contain one special character.");
+    }
+
+    const result = document.getElementById("loginResult");
+
+    if (errors.length > 0) {
+        result.style.color = "red";
+        result.textContent = errors.join(" ");
+    } else {
+        result.style.color = "green";
+        result.textContent = "Login Successful!";
+    }
+}
+
+
+// Q8. Dynamic Object Updater
+// Create a user object with name, email and age.
+// Build a form to edit these values.
+// On submit, update the user object in real time.
+// Display updated object details using DOM.
+//
+// Run this question in a browser.
+
+const user = {
+    name: "John",
+    email: "john@mail.com",
+    age: 21
+};
+
+function updateUser() {
+    user.name = document.getElementById("userName").value;
+    user.email = document.getElementById("userEmail").value;
+    user.age = Number(document.getElementById("userAge").value);
+
+    document.getElementById("userResult").textContent =
+        JSON.stringify(user, null, 2);
+
+    console.log("Updated User:", user);
+}
+
+
+// Q9. Shopping Cart Total (Classes + RegExp for Coupon)
+// Create a Cart class.
+// Add items with name, price and quantity.
+// Calculate total using getTotal().
+// Validate coupon using RegExp.
+// Coupon format must be SAVE20 or DISC10.
+// Apply the percentage discount and show final total.
+
+class Cart {
+    constructor() {
+        this.items = [];
+    }
+
+    addItem(name, price, quantity) {
+        this.items.push({
+            name: name,
+            price: price,
+            quantity: quantity
+        });
+    }
+
+    getTotal() {
+        return this.items.reduce((total, item) => {
+            return total + item.price * item.quantity;
+        }, 0);
+    }
+
+    applyCoupon(coupon) {
+        const pattern = /^(SAVE|DISC)(10|20)$/;
+
+        if (!pattern.test(coupon)) {
+            console.log("Invalid Coupon Code!");
+            return;
+        }
+
+        const discount = Number(coupon.match(/\d+/)[0]);
+        const total = this.getTotal();
+        const finalTotal = total - (total * discount / 100);
+
+        console.log("Original Total:", total);
+        console.log("Discount:", discount + "%");
+        console.log("Final Total:", finalTotal);
+    }
+}
+
+const cart = new Cart();
+
+cart.addItem("Laptop", 50000, 1);
+cart.addItem("Mouse", 500, 2);
+cart.addItem("Keyboard", 1000, 1);
+
+console.log("Cart Total:", cart.getTotal());
+
+cart.applyCoupon("SAVE20");
+
+
+// =====================================================
+// END OF ASSIGNMENT 4
+// =====================================================
